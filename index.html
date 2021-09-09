@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./styles/style.css">
+</head>
+<body>
+    
+    <div id="navappend"></div>
+    </br>
+    <div>
+        <input type="text" placeholder="search Recepies" id="searc">
+        <button id="button" onclick="xyz()">Search</button>
+    </div>
+    <div id = "trend">Trending Recipies</div>
+    <div id="append"></div>
+    
+</body>
+</html>
+<script>
+    function xyz(){
+       let query = document.getElementById('searc').value
+       let url = `https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`
+       fetch(url)
+       .then((res)=>{
+           return res.json();
+       }).then((res)=>{
+         var a = (res.meals)
+         if(a != null){
+             console.log("a",a)
+              localStorage.setItem('recp', JSON.stringify(a));
+              window.location.href = "./searchresult.html"
+              
+         }
+          if(a == null){
+               let query1 = document.getElementById('searc').value
+            url = `https://www.themealdb.com/api/json/v1/1/filter.php?a=${query1}`
+             fetch(url)
+             .then((res)=>{
+                 return res.json();
+             }).then((res)=>{
+                var b = res.meals;
+                console.log("b",b)
+                if(b!=null){
+                    console.log("b",b)
+                     localStorage.setItem('recp', JSON.stringify(b));
+                     window.location.href = "./searchresult.html"
+                }
+                if(b == null){
+                     alert("Recepie Not Found")
+                }
+             })
+          }
+       })  
+    }
+</script>
+<script type="module">
+    
+    import navbar from "./components/navbar.js"
+    import {getData,appendData,ingredient} from "./scripts/showdata.js"
+    let navappend = document.getElementById("navappend");
+    navappend.innerHTML = navbar();
+      
+    let response = getData("https://www.themealdb.com/api/json/v1/1/search.php?f=b")
+    response.then((data)=>{
+         data = data.meals;
+         let id = document.getElementById('append');
+        //   appendData(data, id, "strMeal", "strThumb")
+        var i = 0;
+        setInterval(function(){
+            
+            appendData(data.reverse(), id, "strMeal", "strThumb")
+        },2000)
+    })
+  
+   
+   
+  
+</script>
+
